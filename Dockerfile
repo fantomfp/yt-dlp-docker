@@ -5,18 +5,17 @@ ENV FULL_URL="https://www.youtube.com/watch?v=" \
 YT_ID=""
 
 RUN dnf -y update && \
-dnf clean all
+    dnf -y install yt-dlp && \
+    dnf clean all
 
-RUN dnf -y install yt-dlp && \
-dnf clean all
+RUN useradd -m -s /usr/bin/sh yt-user && \
+    mkdir -p /home/yt-user/.config /home/yt-user/downloads && \
+    chown yt-user:yt-user /home/yt-user/.config /home/yt-user/downloads
 
-RUN useradd -m -s /usr/bin/sh yt-user
 
 USER yt-user
-WORKDIR /home/yt-user
-RUN mkdir -p .config downloads
 
-WORKDIR downloads
+WORKDIR /home/yt-user/downloads
 
 COPY --chmod=755 run.sh /run.sh
 
